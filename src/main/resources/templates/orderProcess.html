@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th = "https://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+<style>
+		.status {
+			color: green;
+		}
+		.mb-2 {
+			color: RoyalBlue;
+		}
+  		body {
+            background-color: LightGray;
+            font-family: Arial, sans-serif;
+        }
+        .order-container {
+            margin-top: 50px;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .order-name {
+            margin-bottom: 20px;
+        }
+        .order-details {
+            margin-bottom: 10px;
+        }
+        .order-details h5 {
+            font-size: 18px;
+            margin: 0;
+        }
+        .budget {
+            color: green;
+            font-weight: bold;
+        }
+        .action-buttons {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 50px;
+        }
+        .action-buttons .btn {
+		    margin-left: 10px;
+		}
+        .btn-primary.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+</style>
+	<meta charset="UTF-8">
+	<title>TechCenter - orders</title>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+	<script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.min.js"></script>
+</head>
+<body style = "background-color:LightGray;">
+		<div th:replace="~{header :: header}"></div>
+		
+		<div class="container">
+    		<div class="row">
+        	<div class="col-md-12 order-container">
+	            <h1 class="order-name" th:text="${order.orderName}"></h1>
+	            <div class="order-details">
+	                <h4 th:text="'Budget: ' + ${order.budget} + '$'" class="budget"></h4>
+	            </div>
+	            <div class="order-details">
+	                <h4 th:text="'Duration: ' + ${order.duration}" class="duration"></h4>
+	            </div>
+	            <div class="order-details">
+	                <h4 th:text="'Category: ' + ${order.category}" class="category"></h4>
+	            </div>
+	            <div class="order-details">
+	                <h4 th:text="'Details: ' + ${order.details}" class="details"></h4>
+	            </div>
+            
+            <div class="action-buttons">
+                <div sec:authorize="isAuthenticated()" th:if="${order.userId != #authentication.principal.userId && selection == null && order.status == 'Pending'}">
+					<a type = "button" class = "btn btn-primary btn-lg" th:href="@{/order/assign/{orderId}(orderId=${order.orderId})}">Вiдгукнутися</a>
+				</div>
+				
+				<div sec:authorize="isAuthenticated()" th:if="${order.userId != #authentication.principal.userId && selection != null && order.status == 'Pending'}">
+					<button type = "button" class = "btn btn-primary btn-lg" th:href="@{/order/assign/{orderId}(orderId=${order.orderId})}" disabled>Вiдгук створено</button>
+				</div>
+				
+				<div sec:authorize="isAuthenticated()" th:if="${order.userId == #authentication.principal.userId && order.status == 'Pending'}">
+					<a type = "button" class = "btn btn-primary btn-lg" th:href="@{/order/process/{orderId}(orderId=${order.orderId})}">Обрати майстра</a>
+				</div>
+				
+				<!-- PROCESSION BUTTONS -->
+				
+				<!-- Creator edit -->
+				<div sec:authorize="isAuthenticated()" th:if="${order.userId == #authentication.principal.userId && order.status == 'Assigned' && order.payment == null}">
+					<a type = "button" class = "btn btn-primary btn-lg" th:href="@{/order/edit/{orderId}(orderId=${order.orderId})}">Додати/Оновити iнформацiю</a>
+				</div>
+				
+				<!-- Creator view solution -->
+				<div sec:authorize="isAuthenticated()" th:if="${order.userId == #authentication.principal.userId && order.status == 'Assigned' && order.solutionStatus == 'done'}">
+					<a type = "button" class = "btn btn-primary btn-lg" th:href="@{/order/solution/{orderId}(orderId=${order.orderId})}">Перегляд рiшення</a>
+				</div>
+				
+				<!-- Creator write message -->
+				<div sec:authorize="isAuthenticated()" th:if="${order.userId == #authentication.principal.userId && order.status == 'Assigned'}">
+					<a type = "button" class = "btn btn-primary btn-lg" th:href="@{/order/message/{userId}(userId=${assigneduser.userId})}">Написати повiдомлення виконавцю</a>
+				</div>
+				
+				<!-- Creator review editor ADD ORDER.PAYMENT CHECK-->
+				<div sec:authorize="isAuthenticated()" th:if="${order.userId == #authentication.principal.userId && order.status == 'Assigned' && order.review == null && order.payment != null}">
+					<a type = "button" class = "btn btn-primary btn-lg" th:href="@{/order/review/{orderId}(orderId=${order.orderId})}">Свторити вiдгук</a>
+				</div>
+				
+				<div sec:authorize="isAuthenticated()" th:if="${order.userId == #authentication.principal.userId && order.status == 'Assigned' && order.review == null && order.payment == null}">
+					<button type = "button" class = "btn btn-primary btn-lg" th:href="@{/order/review/{orderId}(orderId=${order.orderId})}" disabled>Свторити вiдгук(Пiсля оплати)</button>
+				</div>
+				
+				<!-- Creator payment -->
+				<div sec:authorize="isAuthenticated()" th:if="${order.userId == #authentication.principal.userId && order.status == 'Assigned' && order.solutionStatus == 'done' && order.payment == null}">
+					<a type = "button" class = "btn btn-primary btn-lg" th:href="@{/order/payment/{orderId}(orderId=${order.orderId})}">Пiдтвердити виконання/Оплата</a>
+				</div>
+				
+				<div sec:authorize="isAuthenticated()" th:if="${order.userId == #authentication.principal.userId && order.status == 'Assigned' && order.solutionStatus == 'undone'}">
+					<button type = "button" class = "btn btn-primary btn-lg" th:href="@{/order/payment/{orderId}(orderId=${order.orderId})}" disabled>Очiкування виконання роботи</button>
+				</div>
+				
+				<!-- Creator finish order ADD PAYMENT CHECK -->
+				<div sec:authorize="isAuthenticated()" th:if="${order.userId == #authentication.principal.userId && order.status == 'Assigned' && order.review != null && order.solutionStatus == 'finished'}">
+					<a type = "button" class = "btn btn-primary btn-lg" th:href="@{/order/finish/{orderId}(orderId=${order.orderId})}">Завершити</a>
+				</div>
+				
+				<div sec:authorize="isAuthenticated()" th:if="${order.userId == #authentication.principal.userId && order.status == 'Assigned' && order.review == null && order.solutionStatus != 'finished' && order.payment != null}">
+					<button type = "button" class = "btn btn-primary btn-lg" th:href="@{/order/finish/{orderId}(orderId=${order.orderId})}" disabled>Завершити(створiть вiдгук)</button>
+				</div>
+				
+				<div sec:authorize="isAuthenticated()" th:if="${order.userId == #authentication.principal.userId && order.status == 'Assigned' && order.review != null && order.solutionStatus != 'finished' && order.payment != null}">
+					<button type = "button" class = "btn btn-primary btn-lg" th:href="@{/order/finish/{orderId}(orderId=${order.orderId})}" disabled>Завершити(очiкування виконавця)</button>
+				</div>
+				
+												<!-- EDITOR PART -->
+												
+				<!-- Editor write message -->
+				<div sec:authorize="isAuthenticated()" th:if="${assigneduser.userId == #authentication.principal.userId && order.status == 'Assigned'}">
+					<a type = "button" class = "btn btn-primary btn-lg" th:href="@{/order/message/{userId}(userId=${creatoruser.userId})}">Написати повiдомлення замовнику</a>
+				</div>
+				
+				<!-- Editor suggest solution TO SOLUTION ASSESION -->
+				<div sec:authorize="isAuthenticated()" th:if="${assigneduser.userId == #authentication.principal.userId && order.status == 'Assigned' && order.solutionStatus == 'undone'}">
+					<a type = "button" class = "btn btn-primary btn-lg" th:href="@{/order/solution/{orderId}(orderId=${order.orderId})}">Повiдомити про виконання</a>
+				</div>
+				
+				<div sec:authorize="isAuthenticated()" th:if="${assigneduser.userId == #authentication.principal.userId && order.status == 'Assigned' && order.solutionStatus == 'done'}">
+					<a type = "button" class = "btn btn-primary btn-lg" th:href="@{/order/solution/{orderId}(orderId=${order.orderId})}" >Рiшення</a>
+				</div>
+				
+				<!-- Editor finish order PAYMENT RECIEVE changes solution status to finished -->
+				<div sec:authorize="isAuthenticated()" th:if="${assigneduser.userId == #authentication.principal.userId && order.status == 'Assigned' && order.review != null && order.solutionStatus != 'finished'}">
+					<a type = "button" class = "btn btn-primary btn-lg" th:href="@{/order/finishsolution/{orderId}(orderId=${order.orderId})}">Завершити</a>
+				</div>
+				
+				<div sec:authorize="isAuthenticated()" th:if="${assigneduser.userId == #authentication.principal.userId && order.status == 'Assigned' && order.review == null}">
+					<button type = "button" class = "btn btn-primary btn-lg" th:href="@{/order/finishsolution/{orderId}(orderId=${order.orderId})}" disabled>Завершити(Необхiдно пiдтердження виконання роботи)</button>
+				</div>
+				
+				
+            </div>
+            
+            
+         </div>
+         </div>
+         </div>
+			
+			
+			
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
+	<script th:src="@{/webjars/jquery/jquery.min.js}"></script>
+	<script th:src="@{/webjars/popper.js/umd/popper.min.js}"></script>
+	<script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+</body>
+</html>

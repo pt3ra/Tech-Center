@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th = "https://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+</head>
+<body style = "background-color:LightGray;">
+	<header>
+		<nav class="navbar navbar-expand-lg bg-body-tertiary bg-dark" data-bs-theme="dark">
+		  <div class="container-fluid">
+		    <a class="navbar-brand" href="\">TechCenter</a>
+		    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+		      <span class="navbar-toggler-icon"></span>
+		    </button>
+		    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+		      <ul class="navbar-nav me-auto mb-2 mb-lg-0" style="font-style: normal;">
+		        <li class="nav-item dropdown">
+		          <a class="nav-link dropdown-toggle" href="" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+		            Для замовникiв
+		          </a>
+		          <ul class="dropdown-menu">
+		            <li><a class="dropdown-item" th:href="@{/order/create}">Створити проект</a></li>
+		            <li><hr class="dropdown-divider"></li>
+		            <li><a class="dropdown-item" href="/freelancers/sort/DESC/gradeCount">Пошук фрилансерiв</a></li>
+		          </ul>
+		        </li>
+		        <li class="nav-item">
+		          <a class="nav-link" th:href="@{/order/list/all}">Пошук замовлень</a>
+		        </li>
+		        <li class="nav-item">
+		          <a class="nav-link" th:href="@{/order/ongoing}">Активнi замовлення</a>
+		        </li>
+		      </ul>
+		      	<div class="d-grid gap-2 d-md-block">
+		      	<div sec:authorize="isAuthenticated()">
+		      		<ul class="navbar-nav me-auto mb-2 mb-lg-0" style="font-style: normal; padding-right: 20px;">
+		      		<li class="nav-item" style="padding-right:10px;">
+				        <a class="nav-link" th:href="@{/user/notifications}">Повiдомлення</a>
+				    </li>
+		      		<li class="nav-item dropdown">
+		      		<a class="nav-link dropdown-toggle" href="" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+		            	<span sec:authentication="principal.firstName"></span>
+		            </a>
+		          <ul class="dropdown-menu" aria-labelledby="userDropdown">
+	                <li><a class="dropdown-item" th:href="@{/profile/{userId}(userId=${#authentication.principal.userId})}">User Profile</a></li>
+	                <li><form th:action="@{/logout}" method="post">
+	                    <button class="dropdown-item" type="submit">Logout</button>
+	                </form></li>
+            	 </ul>
+            	 </li>
+            	 </ul>
+		      	</div>
+		      	 <div sec:authorize="isAnonymous()">
+		      	 	<ul class="navbar-nav me-auto mb-2 mb-lg-0" style="font-style: normal;">
+				        <li class="nav-item" style="padding-right:5px;">
+			        	<a class="btn btn-primary" role="button" aria-disabled="true" th:href="@{/login}">Вхід</a>
+			        	</li>
+			        	<li class="nav-item">
+						<a class="btn btn-secondary" role="button" aria-disabled="true" th:href="@{/register}">Реєстрація</a>
+						</li>
+					</ul>
+				</div>
+				</div>
+		    </div>
+		  </div>
+		</nav>
+	</header>
+</body>
+</html>

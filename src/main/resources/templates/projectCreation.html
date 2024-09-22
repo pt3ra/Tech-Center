@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th = "https://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+	<meta charset="UTF-8">
+	<title>TechCenter - Create Order</title>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+	<script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.min.js"></script>
+ <style>
+  .order-form {
+    max-width: 700px; 
+    margin: 30px auto; 
+    padding: 20px;
+    border-radius: 5px;
+    background-color: #fff;
+  }
+  .form-label {
+    font-weight: bold;
+  }
+  .budget-symbol {
+    margin-right: 5px;
+  }
+</style>
+</head>
+<body style = "background-color:LightGray;">
+	<div th:replace="~{header :: header}"></div>
+		
+	<div class="container text-center">
+    <div class="order-form">
+      <h1>Публікація замовлення</h1>
+
+      <form th:action="@{/process_order_creation}" method="post" th:object ="${order}">
+        <div class="mb-3">
+          <label class="form-label">Назва замовлення</label>
+          <input type="text" class="form-control" th:field="*{orderName}" required>
+        </div>
+
+        <div class="mb-3">
+          <label for="category" class="form-label">Тип роботи</label>
+          <select class="form-select" id="category" aria-label="Виберіть із списку" th:field="*{category}" required>
+	            <option disabled selected value="">Виберіть із списку</option>
+	            <option value="Дистанційна(віддалений робочий стіл)">Дистанційна(віддалений робочий стіл)</option>
+	            <option value="Консультація">Консультація</option>
+	            <option value="На дому">На дому</option>
+	            <option value="З виїздом">З виїздом</option>  
+            </select>
+        </div>
+
+        <div class="mb-3">
+          <label for="details" class="form-label">Опис замовлення</label>
+          <textarea class="form-control" id="details" rows="3" th:field="*{details}" required></textarea>
+        </div>
+
+        <div class="mb-3">
+          <label for="duration" class="form-label">Тривалість до</label>
+          <input type="date" class="form-control" id="duration" th:field="*{duration}" required>
+        </div>
+
+        <div class="mb-3">
+          <label for="budget" class="form-label">Бюджет</label>
+          <div class="input-group">
+            <span class="input-group-text budget-symbol">$</span>
+            <input type="text" class="form-control" id="budget" th:field="*{budget}" required>
+          </div>
+        </div>
+
+        <div class="d-grid gap-2">
+          <button type="submit" class="btn btn-primary btn-lg">Опублікувати</button>
+        </div>
+      </form>
+    </div>
+  </div>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
+</body>
+</html>

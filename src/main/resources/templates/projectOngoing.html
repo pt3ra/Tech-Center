@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th = "https://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+<style>
+  .status {
+	color: green;
+  }
+  .mb-2 {
+	color: RoyalBlue;
+    font-style: italic;
+  }
+  .container{
+  	padding-top: 15px;
+  }
+</style>
+	<meta charset="UTF-8">
+	<title>TechCenter - active orders</title>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+	<script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.min.js"></script>
+</head>
+<body style = "background-color:LightGray;">
+	<div th:replace="~{header :: header}"></div>
+	
+	<div class = "container text-center">
+		<div>
+			<h1>Активні замовлення</h1>
+		</div>
+	</div>
+	
+		<div class="container">
+			<h3>Назначені замовлення</h3>
+		</div>
+    		<div class="list-group" th:each="assignedorder: ${assignedorders}">
+			  <a th:href="@{/order/processing/{orderId}(orderId=${assignedorder.orderId})}" class="list-group-item list-group-item-action">
+			    <div class="d-flex w-100 justify-content-between">
+			      <h5 class="mb-1" th:text="${assignedorder}">Ремонт монітору  -  50$</h5>
+			      <small class="text-muted" th:text="${assignedorder.duration}">20 days ago</small>
+			    </div>
+			    <div class="d-flex w-100 justify-content-between">
+			    <p class="mb-1" th:text="${assignedorder.details}">Монітору 3 роки, сигнал з'являється на декілька секунд та знову зникає </p>
+			    <small class="status" th:text="${assignedorder.status}">Finished</small>
+			    </div>
+			    <div class="d-flex w-100 justify-content-between">
+			    <small class="text-muted" th:text="${assignedorder.user}">Ігор Шведенко</small>
+			    </div>
+			  </a>
+			</div>
+			<div th:if="${assignedorders.empty}">
+			    <div class="alert alert-success" role="alert">
+			      Немає призначених замовлень
+			    </div>
+		    </div>
+			
+			<div class="container">
+				<h3>Створені замовлення</h3>
+			</div>
+			
+			<div class="list-group" th:each="order: ${orders}" th:if="${order.status != 'Completed'}">
+			  <a th:href="@{/order/view/{orderId}(orderId=${order.orderId})}" th:if="${order.status == 'Pending'}" class="list-group-item list-group-item-action">
+			    <div class="d-flex w-100 justify-content-between">
+			      <h5 class="mb-1" th:text="${order}">*{heading} - *{bugdet}</h5>
+			      <small class="text-muted" th:text="${order.duration}">*{timeRes}</small>
+			    </div>
+			    <div class="d-flex w-100 justify-content-between">
+			    <p class="mb-1" th:text="${order.details}">*{details}</p>
+			    <small class="status" th:text="${order.status}">*{status}</small>
+			    </div>
+			  </a>
+			  <a th:href="@{/order/processing/{orderId}(orderId=${order.orderId})}" th:if="${order.status == 'Assigned'}" class="list-group-item list-group-item-action">
+			    <div class="d-flex w-100 justify-content-between">
+			      <h5 class="mb-1" th:text="${order}">*{heading} - *{bugdet}</h5>
+			      <small class="text-muted" th:text="${order.duration}">*{timeRes}</small>
+			    </div>
+			    <div class="d-flex w-100 justify-content-between">
+			    <p class="mb-1" th:text="${order.details}">*{details}</p>
+			    <small class="status" th:text="${order.status}">*{status}</small>
+			    </div>
+			  </a>
+			</div>
+			
+			<div th:if="${orders.empty}">
+			    <div class="alert alert-success" role="alert">
+			      Немає створених замовлень
+			    </div>
+		    </div>
+
+
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
+	<script th:src="@{/webjars/jquery/jquery.min.js}"></script>
+	<script th:src="@{/webjars/popper.js/umd/popper.min.js}"></script>
+	<script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+</body>
+</html>

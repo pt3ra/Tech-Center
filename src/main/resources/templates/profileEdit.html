@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th = "https://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+	<meta charset="UTF-8">
+	<title>TechCenter - Edit Profile</title>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+	<script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.min.js"></script>
+ <style>
+  .order-form {
+    max-width: 700px; 
+    margin: 30px auto; 
+    padding: 20px;
+    border-radius: 5px;
+    background-color: #fff;
+  }
+  .form-label {
+    font-weight: bold;
+  }
+</style>
+</head>
+<body style = "background-color:LightGray;">
+	<div th:replace="~{header :: header}"></div>
+	
+	<div th:if="${success}" class="alert alert-success">
+	        <p th:text="${success}">Success message</p>
+	    </div>
+	
+	<div class="container text-center">
+    <div class="order-form">
+      <h1>Данi профiлю</h1>
+
+      <form th:action="@{/process_edit_profile}" method="post" th:object ="${profile}">
+        <div class="mb-3">
+          <label class="form-label">Електронна адресса</label>
+          <input type="email" class="form-control" th:field="*{email}" required>
+        </div>
+
+        <div class="mb-3">
+          <label for="details" class="form-label">Інформацiя про себе</label>
+          <textarea class="form-control" id="details" rows="3" th:field="*{description}" required></textarea>
+        </div>
+        
+        <div class="mb-3">
+          <label class="form-label">Країна</label>
+          <input type="text" class="form-control" th:field="*{country}" required>
+        </div>
+        
+        <div class="mb-3">
+          <label class="form-label">Місто/Населений пункт</label>
+          <input type="text" class="form-control" th:field="*{city}" required>
+        </div>
+
+        <div class="d-grid gap-2">
+          <button type="submit" class="btn btn-primary btn-lg">Зберегти</button>
+        </div>
+      </form>
+    </div>
+  </div>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
+</body>
+</html>

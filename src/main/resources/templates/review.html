@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th = "https://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+	<meta charset="UTF-8">
+	<title>TechCenter - Solution</title>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+	<script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.min.js"></script>
+ <style>
+  .order-form {
+    max-width: 700px; 
+    margin: 30px auto; 
+    padding: 20px;
+    border-radius: 5px;
+    background-color: #fff;
+  }
+  .form-label {
+    font-weight: bold;
+  }
+</style>
+</head>
+<body style = "background-color:LightGray;">
+	<div th:replace="~{header :: header}"></div>
+	    
+	<div class="container text-center">
+    <div class="order-form">
+      <h1>Надiслати вiдгук</h1>
+
+      <form th:action="@{/order/sendreview/{orderId}(orderId=${order.orderId})}" method="post" th:object ="${review}" th:if="${order.review == null}">
+
+        <div class="mb-3">
+          <label for="details" class="form-label">Текст вiдгуку</label>
+          <textarea class="form-control" id="details" rows="20" th:field="*{description}" required></textarea>
+        </div>
+        
+        <div class="mb-3 row">
+          <label for="grade" class="col-sm-3 col-form-label form-label">Оцiнка</label>
+          <div class="col-sm-9">
+            <select class="form-select" id="category" aria-label="Виберіть із списку" th:field="*{grade}" required>
+	            <option selected value="1">1</option>
+	            <option value="2">2</option>
+	            <option value="3">3</option>
+	            <option value="4">4</option> 
+	            <option value="5">5</option>   
+            </select>
+          </div>
+        </div>
+
+        <div class="d-grid gap-2">
+          <button type="submit" class="btn btn-primary btn-lg" th:if="${creatoruser.userId == #authentication.principal.userId}">Зберегти</button>
+        </div>
+      </form>
+      
+      <div class="d-grid gap-2" style="padding-top:5px;">
+      	<a type = "button" class = "btn btn-primary btn-lg" th:href="@{/order/processing/{orderId}(orderId=${order.orderId})}">Назад</a>
+      </div>
+      
+    </div>
+  </div>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
+	<script th:src="@{/webjars/jquery/jquery.min.js}"></script>
+	<script th:src="@{/webjars/popper.js/umd/popper.min.js}"></script>
+	<script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+</body>
+</html>
